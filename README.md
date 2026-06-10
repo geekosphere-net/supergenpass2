@@ -55,10 +55,16 @@ CT_IP="192.168.1.50/24" CT_GW="192.168.1.1" CT_STORAGE="local" \
   bash <(curl -fsSL https://raw.githubusercontent.com/geekosphere-net/supergenpass2/main/deploy/proxmox/create_lxc.sh)
 ```
 
-To update the app in an existing container:
+To update the app, run inside the container:
 
 ```shell
-bash <(curl -fsSL https://raw.githubusercontent.com/geekosphere-net/supergenpass2/main/deploy/proxmox/create_lxc.sh) update <CT_ID>
+update
+```
+
+Or from the PVE host without entering the container:
+
+```shell
+pct exec <CT_ID> -- update
 ```
 
 ## Deploy (manual / other hosts)

@@ -1,14 +1,15 @@
 #!/usr/bin/env sh
 # SGP install script — runs inside the Alpine LXC
-# Called by create_lxc.sh; can also be re-run to update the app.
+# Called by create_lxc.sh on first install; also invoked by the `update` command.
 set -eu
 
 REPO_URL="https://github.com/geekosphere-net/supergenpass2.git"
 WWW_DIR="/var/www/sgp"
+INSTALL_SCRIPT_URL="https://raw.githubusercontent.com/geekosphere-net/supergenpass2/main/deploy/proxmox/install.sh"
 
 # ── Packages ──────────────────────────────────────────────────────────────────
 apk update --quiet
-apk add --quiet --no-progress nginx git
+apk add --quiet --no-progress nginx git curl
 
 # ── Clone or update repo ──────────────────────────────────────────────────────
 if [ -d "$WWW_DIR/.git" ]; then
@@ -18,7 +19,6 @@ else
 fi
 
 # ── nginx config ──────────────────────────────────────────────────────────────
-# Alpine nginx uses /etc/nginx/http.d/ for site configs
 cat > /etc/nginx/http.d/sgp.conf << 'NGINXCONF'
 server {
     listen 80 default_server;
@@ -37,7 +37,6 @@ server {
         try_files $uri $uri/ =404;
     }
 
-    # Block source/build directories — not needed at runtime
     location ~ ^/(src|grunt|test|node_modules|build|deploy)/ {
         deny all;
     }
@@ -48,9 +47,19 @@ server {
 }
 NGINXCONF
 
-# Remove default site if present
 rm -f /etc/nginx/http.d/default.conf
 
 # ── Enable and start nginx ────────────────────────────────────────────────────
 rc-update add nginx default 2>/dev/null || true
 rc-service nginx restart 2>/dev/null || rc-service nginx start
+
+# ── Install the `update` command ──────────────────────────────────────────────
+cat > /usr/local/bin/update << UPDATESCRIPT
+#!/usr/bin/env sh
+set -eu
+echo "Updating SGP..."
+curl -fsSL "$INSTALL_SCRIPT_URL" | sh
+echo "Done."
+UPDATESCRIPT
+
+chmod +x /usr/local/bin/update
