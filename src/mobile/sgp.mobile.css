@@ -253,51 +253,23 @@ input[type="radio"]:checked + label {
 }
 
 
-/* Subdomains toggle */
-
-#SubdomainsField {
-   position: absolute;
-   top: 0;
-   right: 9px;
-}
+/* Checkbox base — hide the actual input */
 
 input[type="checkbox"] {
    display: none;
 }
 
-input[type="checkbox"] + label {
-   padding: 2px 4px;
-   color: #fff;
-   background-color: #356;
-   font-size: 12px;
-   border: solid 1px #023;
-   border-radius: 3px;
-   text-decoration: line-through;
-   cursor: pointer;
+
+/* SpecialChar and Subdomains toggles — styled like SHA/MD5 radio buttons */
+
+#SpecialCharField,
+#SubdomainsField {
+   display: inline-block;
+   margin-right: 6px;
 }
 
-input[type="checkbox"] + label:hover {
-   color: #fff;
-   border-color: #023;
-   text-decoration: line-through;
-}
-
-input[type="checkbox"]:checked + label {
-   color: #999;
-   background-color: #fff;
-   border-color: #999;
-   text-decoration: none;
-}
-
-input[type="checkbox"]:checked + label:hover {
-  color: #333;
-  border-color: #333;
-}
-
-
-/* SpecialChar toggle — styled like SHA/MD5 radio buttons */
-
-#SpecialCharField input[type="checkbox"] + label {
+#SpecialCharField input[type="checkbox"] + label,
+#SubdomainsField input[type="checkbox"] + label {
    padding: 6px 8px;
    color: #999;
    background-color: #ccc;
@@ -307,21 +279,24 @@ input[type="checkbox"]:checked + label:hover {
    border-radius: 4px;
    text-decoration: none;
    font-weight: normal;
+   cursor: pointer;
 }
 
-#SpecialCharField input[type="checkbox"] + label:hover {
+#SpecialCharField input[type="checkbox"] + label:hover,
+#SubdomainsField input[type="checkbox"] + label:hover {
    color: #000;
 }
 
-#SpecialCharField input[type="checkbox"]:checked + label {
+#SpecialCharField input[type="checkbox"]:checked + label,
+#SubdomainsField input[type="checkbox"]:checked + label {
    color: #fff;
    background-color: #356;
    border-bottom: solid 2px #023;
-   text-decoration: none;
    font-weight: bold;
 }
 
-#SpecialCharField input[type="checkbox"]:checked + label:hover {
+#SpecialCharField input[type="checkbox"]:checked + label:hover,
+#SubdomainsField input[type="checkbox"]:checked + label:hover {
    color: #fff;
 }
 
@@ -352,9 +327,6 @@ input[type="checkbox"]:checked + label:hover {
    display: block;
 }
 
-.Advanced #Domain {
-   padding-right: 45px;
-}
 
 
 /* Save button */

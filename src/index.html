@@ -71,16 +71,17 @@
 
 				<fieldset id="SpecialCharField" class="Option">
 					<input id="SpecialChar" type="checkbox" checked="checked">
-					<label for="SpecialChar" class="Button" title="Append % to password">Append%</label>
+					<label for="SpecialChar" class="Button" title="Append % to password">Append %</label>
+				</fieldset>
+
+				<fieldset id="SubdomainsField" class="Option">
+					<input id="RemoveSubdomains" type="checkbox" value="disabled" checked="checked">
+					<label for="RemoveSubdomains" class="Button" title="Toggle subdomain removal">TLD</label>
 				</fieldset>
 
 				<fieldset id="DomainField">
 					<input id="Domain" type="url" placeholder="Domain / URL" autocorrect="off" autocapitalize="off">
 					<label for="Domain" class="placeholder">Domain / URL</label>
-					<fieldset id="SubdomainsField" class="Option">
-						<input id="RemoveSubdomains" type="checkbox" value="disabled" checked="checked">
-						<label for="RemoveSubdomains" title="Toggle subdomain removal">TLD</label>
-					</fieldset>
 				</fieldset>
 
 				<div id="Result">
