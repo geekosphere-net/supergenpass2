@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # SGP (SuperGenPass) LXC installer for Proxmox VE
-# Run on your PVE host:
-#   bash <(curl -fsSL https://raw.githubusercontent.com/geekosphere-net/supergenpass2/main/deploy/proxmox/create_lxc.sh)
+#
+# Install: bash <(curl -fsSL https://raw.githubusercontent.com/geekosphere-net/supergenpass2/main/deploy/proxmox/create_lxc.sh)
+# Update:  bash <(curl -fsSL https://...create_lxc.sh) update <CT_ID>
 
 set -euo pipefail
 
@@ -31,6 +32,42 @@ header_info() {
 EOF
 }
 
+INSTALL_SCRIPT_URL="https://raw.githubusercontent.com/geekosphere-net/supergenpass2/main/deploy/proxmox/install.sh"
+
+# ── Preflight ─────────────────────────────────────────────────────────────────
+header_info
+
+if ! command -v pveversion &>/dev/null; then
+  msg_error "This script must be run on a Proxmox VE host"
+fi
+
+# ── Update mode ───────────────────────────────────────────────────────────────
+if [[ "${1:-}" == "update" ]]; then
+  CT_ID="${2:-}"
+  if [[ -z "$CT_ID" ]]; then
+    msg_error "Usage: $0 update <CT_ID>"
+  fi
+  if ! pct status "$CT_ID" &>/dev/null; then
+    msg_error "Container ${CT_ID} not found"
+  fi
+
+  msg_info "Starting container ${CT_ID} if not running"
+  pct start "$CT_ID" 2>/dev/null || true
+  sleep 2
+  msg_ok "Container ${CT_ID} is running"
+
+  msg_info "Pulling latest code and restarting nginx"
+  pct exec "$CT_ID" -- sh -c \
+    "curl -fsSL '${INSTALL_SCRIPT_URL}' | sh" &>/dev/null
+  msg_ok "Update complete"
+
+  IP=$(pct exec "$CT_ID" -- sh -c "ip -4 addr show eth0 | grep -oP '(?<=inet )[^/]+'" 2>/dev/null || echo "<pending>")
+  echo ""
+  echo -e "  ${GN}SGP updated.${CL}  URL: ${YW}http://${IP}/${CL}"
+  echo ""
+  exit 0
+fi
+
 # ── Defaults (override with env vars before running) ─────────────────────────
 CT_ID="${CT_ID:-$(pvesh get /cluster/nextid 2>/dev/null || echo 200)}"
 CT_HOSTNAME="${CT_HOSTNAME:-sgp}"
@@ -45,17 +82,8 @@ CT_DNS="${CT_DNS:-8.8.8.8}"
 TEMPLATE_STORAGE="${TEMPLATE_STORAGE:-local}"
 UNPRIVILEGED=1
 
-INSTALL_SCRIPT_URL="https://raw.githubusercontent.com/geekosphere-net/supergenpass2/main/deploy/proxmox/install.sh"
-
-# ── Preflight ─────────────────────────────────────────────────────────────────
-header_info
-
-if ! command -v pveversion &>/dev/null; then
-  msg_error "This script must be run on a Proxmox VE host"
-fi
-
 if pct status "$CT_ID" &>/dev/null; then
-  msg_error "Container ID ${CT_ID} already exists. Set a different CT_ID and retry."
+  msg_error "Container ID ${CT_ID} already exists. Set a different CT_ID or run: $0 update ${CT_ID}"
 fi
 
 # ── Find latest Alpine template ───────────────────────────────────────────────
@@ -127,5 +155,5 @@ echo -e "  Hostname : ${YW}${CT_HOSTNAME}${CL}"
 echo -e "  IP       : ${YW}${IP}${CL}"
 echo -e "  URL      : ${YW}http://${IP}/${CL}"
 echo ""
-echo -e "  To update the app later: ${YW}pct exec ${CT_ID} -- sh -c 'cd /var/www/sgp && git pull'${CL}"
+echo -e "  To update: ${YW}bash <(curl -fsSL https://raw.githubusercontent.com/geekosphere-net/supergenpass2/main/deploy/proxmox/create_lxc.sh) update ${CT_ID}${CL}"
 echo ""

@@ -55,10 +55,10 @@ CT_IP="192.168.1.50/24" CT_GW="192.168.1.1" CT_STORAGE="local" \
   bash <(curl -fsSL https://raw.githubusercontent.com/geekosphere-net/supergenpass2/main/deploy/proxmox/create_lxc.sh)
 ```
 
-To update the app in the container after a repo change:
+To update the app in an existing container:
 
 ```shell
-pct exec <CT_ID> -- sh -c 'cd /var/www/sgp && git pull'
+bash <(curl -fsSL https://raw.githubusercontent.com/geekosphere-net/supergenpass2/main/deploy/proxmox/create_lxc.sh) update <CT_ID>
 ```
 
 ## Deploy (manual / other hosts)
