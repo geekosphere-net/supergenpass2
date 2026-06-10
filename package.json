@@ -26,7 +26,7 @@
     "qunitjs": "^2.0.1"
   },
   "description": "A bookmarklet password generator.",
-  "homepage": "https://geekosphere-net.github.io/supergenpass2/",
+  "homepage": "https://sgp.geekosphere.net/",
   "main": "Gruntfile.js",
   "scripts": {
     "test": "grunt qunit"

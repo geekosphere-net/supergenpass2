@@ -19,7 +19,7 @@ var latestVersion = 20150216;
 
 // Hostnames that should not be populated into the domain field on referral.
 var noReferral = [
-  'geekosphere-net.github.io',
+  'sgp.geekosphere.net',
   'www.google.com',
   'www.bing.com',
   'duckduckgo.com',
