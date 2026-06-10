@@ -12,11 +12,8 @@ module.exports = function (grunt) {
       'uglify',
       'cssmin',
       'staticinline',
-      'bookmarklet',
-      'template',
       'clean',
       'qunit',
-      'manifest',
       'checksum'
     ]
   );

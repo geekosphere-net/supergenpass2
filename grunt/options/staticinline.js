@@ -6,7 +6,7 @@ module.exports = {
       basepath: './'
     },
     files: {
-      'mobile/index.html': 'src/mobile/index.html'
+      'index.html': 'src/index.html'
     }
   }
 };
