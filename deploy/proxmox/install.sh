@@ -54,7 +54,7 @@ rc-update add nginx default 2>/dev/null || true
 rc-service nginx restart 2>/dev/null || rc-service nginx start
 
 # ── Install the `update` command ──────────────────────────────────────────────
-cat > /usr/local/bin/update << UPDATESCRIPT
+cat > /bin/update << UPDATESCRIPT
 #!/usr/bin/env sh
 set -eu
 echo "Updating SGP..."
@@ -62,4 +62,4 @@ curl -fsSL "$INSTALL_SCRIPT_URL" | sh
 echo "Done."
 UPDATESCRIPT
 
-chmod +x /usr/local/bin/update
+chmod +x /bin/update
