@@ -295,6 +295,35 @@ input[type="checkbox"]:checked + label:hover {
 }
 
 
+/* SpecialChar toggle — checked = active/blue (opposite of TLD) */
+
+#SpecialCharField input[type="checkbox"] + label {
+   color: #999;
+   background-color: #fff;
+   border-color: #999;
+   text-decoration: line-through;
+   font-weight: bold;
+}
+
+#SpecialCharField input[type="checkbox"] + label:hover {
+   color: #333;
+   border-color: #333;
+}
+
+#SpecialCharField input[type="checkbox"]:checked + label {
+   color: #fff;
+   background-color: #356;
+   border-color: #023;
+   text-decoration: none;
+   font-weight: bold;
+}
+
+#SpecialCharField input[type="checkbox"]:checked + label:hover {
+   color: #fff;
+   border-color: #023;
+}
+
+
 /* Advanced options */
 
 #Options {
