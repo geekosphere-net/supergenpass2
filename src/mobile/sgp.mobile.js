@@ -10,12 +10,7 @@ var identicon = require('./lib/identicon5');
 var shortcut = require('./lib/shortcut');
 var storage = require('./lib/localstorage-polyfill');
 
-// Set default values.
-var messageOrigin = false;
-var messageSource = false;
 var language = location.search.substring(1);
-var latestBookmarklet = '../bookmarklet/bookmarklet.min.js';
-var latestVersion = 20150216;
 
 // Hostnames that should not be populated into the domain field on referral.
 var noReferral = [
@@ -59,9 +54,7 @@ var selectors =
     'Output',
     'Canvas',
     'Options',
-    'SaveDefaults',
-    'Update',
-    'Bookmarklet'
+    'SaveDefaults'
   ];
 
 // Retrieve defaults from local storage.
@@ -83,12 +76,6 @@ var saveCurrentOptionsAsDefaults = function (e) {
   showButtonSuccess(e);
 };
 
-var showUpdateNotification = function (data) {
-  $el.Bookmarklet.attr('href', data);
-  $el.Update.show();
-  sendDocumentHeight();
-};
-
 // Populate domain with referrer, if available and not from the blacklist.
 var populateReferrer = function (referrer) {
   if (referrer) {
@@ -96,61 +83,6 @@ var populateReferrer = function (referrer) {
     if (noReferral.indexOf(referrer) === -1) {
       $el.Domain.val(sgp.hostname(referrer, {removeSubdomains: defaults.removeSubdomains}));
     }
-  }
-};
-
-// Listen for postMessage from bookmarklet.
-var listenForBookmarklet = function (event) {
-
-  var post = event.originalEvent;
-
-  if (post.origin !== window.location.origin) {
-
-    // Save message source.
-    messageSource = post.source;
-    messageOrigin = post.origin;
-
-    // Parse message.
-    $.each(JSON.parse(post.data), function (key, value) {
-      switch (key) {
-      case 'version':
-        if (value < latestVersion) {
-          // Fetch latest bookmarklet.
-          $.ajax({
-            url: latestBookmarklet,
-            success: showUpdateNotification,
-            dataType: 'html'
-          });
-        }
-        break;
-      }
-    });
-
-    // Populate domain field and call back with the browser height.
-    $el.Domain.val(sgp.hostname(messageOrigin, {removeSubdomains: defaults.removeSubdomains})).trigger('change');
-    sendDocumentHeight();
-
-  }
-
-};
-
-var sendDocumentHeight = function () {
-  postMessageToBookmarklet({
-    height: $el.Body.height()
-  });
-};
-
-var sendGeneratedPassword = function (generatedPassword) {
-  postMessageToBookmarklet({
-    result: generatedPassword
-  });
-};
-
-// Send message using HTML5 postMessage API. Only post a message if we are in
-// communication with the bookmarklet.
-var postMessageToBookmarklet = function (message) {
-  if (messageSource && messageOrigin) {
-    messageSource.postMessage(JSON.stringify(message), messageOrigin);
   }
 };
 
@@ -238,7 +170,6 @@ var generatePassword = function () {
 };
 
 var populateGeneratedPassword = function (generatedPassword) {
-  sendGeneratedPassword(generatedPassword);
   $el.Inputs.trigger('blur');
   $el.Output.text(generatedPassword);
   $el.Result.addClass('Offer').removeClass('Reveal');
@@ -289,7 +220,6 @@ var toggleAdvancedOptions = function () {
   var advanced = !$el.Body.hasClass('Advanced');
   $el.Body.toggleClass('Advanced', advanced);
   storage.local.setItem('Advanced', advanced || '');
-  sendDocumentHeight();
 };
 
 var toggleSubdomainIndicator = function () {
@@ -382,6 +312,3 @@ populateReferrer(document.referrer);
 
 // Set focus on password field.
 $el.Passwd.trigger('focus').trigger('change');
-
-// Attach postMessage listener for bookmarklet.
-$(window).on('message', listenForBookmarklet);

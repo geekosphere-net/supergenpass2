@@ -3,8 +3,7 @@
 module.exports = {
   app: {
     src: [
-      'mobile/index.html',
-      'bookmarklet/bookmarklet.min.js'
+      'index.html'
     ],
     dest: 'checksums.json'
   }

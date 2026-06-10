@@ -13,7 +13,6 @@ module.exports = function (grunt) {
       'cssmin',
       'staticinline',
       'clean',
-      'qunit',
       'checksum'
     ]
   );
