@@ -1,4 +1,5 @@
 /* Checksum task */
+/* jshint latedef: false */
 
 'use strict';
 

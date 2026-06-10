@@ -1,6 +1,6 @@
 'use strict';
 
-/*jshint browser: true, devel: true, jquery: true*/
+/*jshint browser: true, devel: true, jquery: true, latedef: false*/
 
 void (function ($) {
 
