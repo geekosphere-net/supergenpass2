@@ -58,15 +58,20 @@
 				</fieldset>
 
 				<fieldset id="MethodField" class="Option">
-					<input id="MethodSHA512" name="Method" type="radio" value="sha512">
+					<input id="MethodSHA512" name="Method" type="radio" value="sha512" checked="checked">
 					<label for="MethodSHA512" class="Button" title="Use SHA-512 algorithm">SHA</label>
-					<input id="MethodMD5" name="Method" type="radio" value="md5" checked="checked">
+					<input id="MethodMD5" name="Method" type="radio" value="md5">
 					<label for="MethodMD5" class="Button" title="Use MD5 algorithm">MD5</label>
 				</fieldset>
 
 				<fieldset id="LenField" class="Option">
-					<input id="Len" type="text" pattern="[0-9]*" value="10" maxlength="2">
+					<input id="Len" type="text" pattern="[0-9]*" value="16" maxlength="2">
 					<label id="Down" class="Button" title="Adjust password length">–</label><label id="Up" class="Button" title="Adjust password length">+</label>
+				</fieldset>
+
+				<fieldset id="SpecialCharField" class="Option">
+					<input id="SpecialChar" type="checkbox" checked="checked">
+					<label for="SpecialChar" class="Button" title="Append % to password">%</label>
 				</fieldset>
 
 				<fieldset id="DomainField">

@@ -47,6 +47,7 @@ var selectors =
     'DomainLabel',
     'RemoveSubdomains',
     'Len',
+    'SpecialChar',
     'Result',
     'Generate',
     'MaskText',
@@ -59,10 +60,11 @@ var selectors =
 
 // Retrieve defaults from local storage.
 var defaults = {
-  length: storage.local.getItem('Len') || 10,
+  length: storage.local.getItem('Len') || 16,
   secret: storage.local.getItem('Salt') || '',
-  method: storage.local.getItem('Method') || 'md5',
+  method: storage.local.getItem('Method') || 'sha512',
   removeSubdomains: !storage.local.getItem('DisableTLD') || false,
+  specialChar: !storage.local.getItem('DisableSpecialChar') || false,
   advanced: storage.local.getItem('Advanced') || false
 };
 
@@ -73,6 +75,7 @@ var saveCurrentOptionsAsDefaults = function (e) {
   storage.local.setItem('Salt', input.options.secret);
   storage.local.setItem('Method', input.options.method);
   storage.local.setItem('DisableTLD', !input.options.removeSubdomains || '');
+  storage.local.setItem('DisableSpecialChar', !$el.SpecialChar.is(':checked') || '');
   showButtonSuccess(e);
 };
 
@@ -170,6 +173,9 @@ var generatePassword = function () {
 };
 
 var populateGeneratedPassword = function (generatedPassword) {
+  if ($el.SpecialChar.is(':checked')) {
+    generatedPassword = generatedPassword + '%';
+  }
   $el.Inputs.trigger('blur');
   $el.Output.text(generatedPassword);
   $el.Result.addClass('Offer').removeClass('Reveal');
@@ -247,6 +253,7 @@ $('input:radio[value=' + defaults.method + ']').prop('checked', true);
 $el.Len.val(validatePasswordLength(defaults.length));
 $el.Secret.val(defaults.secret).trigger('change');
 $el.RemoveSubdomains.prop('checked', defaults.removeSubdomains).trigger('change');
+$el.SpecialChar.prop('checked', defaults.specialChar);
 $el.Body.toggleClass('Advanced', defaults.advanced);
 
 // Perform localization, if requested.
