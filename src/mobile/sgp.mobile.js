@@ -121,7 +121,7 @@ var getPasswordLength = function () {
 };
 
 var validatePasswordLength = function (passwordLength) {
-  passwordLength = parseInt(passwordLength, 10) || 10;
+  passwordLength = parseInt(passwordLength, 10) || 16;
   return Math.max(4, Math.min(passwordLength, 24));
 };
 
@@ -273,8 +273,20 @@ if (!('placeholder' in document.createElement('input'))) {
 }
 
 // Copy to clipboard if possible.
-// https://developers.google.com/web/updates/2015/04/cut-and-copy-commands?hl=en
 $el.CopyButton.on('click', function (e) {
+  var text = $el.Output.text();
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function () {
+      showButtonSuccess(e);
+      $el.Result.removeClass('Reveal');
+    }).catch(function () {
+      $el.CopyButton.hide();
+    });
+    return;
+  }
+
+  // Fallback for non-secure contexts (HTTP).
   var range = document.createRange();
   var selection = window.getSelection();
   var success = false;
