@@ -262,10 +262,12 @@ input[type="checkbox"] {
 
 /* SpecialChar and Subdomains toggles — styled like SHA/MD5 radio buttons */
 
-#SpecialCharField,
-#SubdomainsField {
+#SpecialCharField {
    display: inline-block;
-   margin-right: 6px;
+}
+
+#SubdomainsField {
+   float: right;
 }
 
 #SpecialCharField input[type="checkbox"] + label,
