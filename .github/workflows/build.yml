@@ -1,0 +1,32 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm install
+
+      - name: Install grunt-cli
+        run: npm install -g grunt-cli
+
+      - name: Build (without qunit — needs a real browser)
+        run: grunt jshint browserify uglify cssmin staticinline bookmarklet template clean manifest checksum
+
+      - name: Verify built files unchanged
+        run: |
+          git diff --exit-code mobile/index.html bookmarklet/bookmarklet.min.js checksums.json || \
+          (echo "Built output differs from committed files — run grunt and commit the result." && exit 1)
